@@ -103,7 +103,7 @@ p { color: var(--text-secondary); }
 
 .app-header { position: sticky; z-index: 20; top: .65rem; display: flex; width: min(calc(100% - 1.5rem), 1500px); min-height: 4.5rem; align-items: center; justify-content: space-between; gap: 1rem; margin: .65rem auto 0; border: var(--glass-border); border-radius: 999px; background: var(--glass-bg-strong); padding: .6rem clamp(1rem, 3vw, 2rem); box-shadow: 0 10px 34px rgb(0 0 0 / 7%); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); }
 .brand { display: inline-flex; align-items: center; gap: .7rem; color: var(--color-black); font-size: 1.05rem; font-weight: var(--font-weight-heavy); text-decoration: none; white-space: nowrap; }
-.app-header .brand-logo { width: 2.35rem; height: 2.35rem; flex: 0 0 auto; border: 1px solid rgb(245 245 247 / 35%); border-radius: 50%; background: #f5f5f7; object-fit: cover; }
+.app-header .brand-logo { width: 2.35rem; height: 2.35rem; flex: 0 0 auto; border: 1px solid rgb(245 245 247 / 35%); border-radius: .65rem; background: #f5f5f7; object-fit: contain; padding: .12rem; }
 .brand-mark { display: grid; width: 2.35rem; height: 2.35rem; place-items: center; border-radius: .7rem; background: var(--color-blue-hover); color: var(--color-white); font-weight: 900; }
 .header-actions, .nav-actions, .button-row, .actions { display: flex; align-items: center; gap: .65rem; flex-wrap: wrap; }
 .header-actions form, .nav-actions form, .button-row form { margin: 0; }
@@ -794,7 +794,7 @@ article + article { border-top: var(--border-width) solid var(--color-border-tab
 @media (max-width: 620px) {
     .app-header { width: calc(100% - 1rem); gap: .5rem; padding-inline: .7rem; }
     .app-header .brand { min-width: 0; gap: .45rem; font-size: .9rem; }
-    .app-header .brand-logo { width: 2rem; height: 2rem; }
+    .app-header .brand-logo { width: 2.2rem; height: 2.2rem; }
     .app-header .brand .muted { display: none; }
     .app-header .header-actions { min-width: 0; flex-wrap: nowrap; gap: .35rem; }
     .app-header .header-actions .button, .app-header .header-actions button { min-height: 2.65rem; padding: .55rem .75rem; font-size: .84rem; white-space: nowrap; }
