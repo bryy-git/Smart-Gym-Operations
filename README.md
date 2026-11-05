@@ -388,5 +388,3 @@ No project-specific license has been specified yet. Unless a license is
 added to this repository, all rights remain with the project owner.
 Laravel and other third-party dependencies retain their respective
 licenses.
-#   S m a r t - G y m - O p e r a t i o n s  
- 
