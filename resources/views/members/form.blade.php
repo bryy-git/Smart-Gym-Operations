@@ -1,4 +1,4 @@
-@extends($layout)
+﻿@extends($layout)
 
 @php
     $creating = $mode === 'create';
@@ -62,3 +62,4 @@
     </form>
 </section>
 @endsection
+

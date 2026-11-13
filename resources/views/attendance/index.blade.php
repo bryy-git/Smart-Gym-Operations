@@ -1,4 +1,4 @@
-@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
+﻿@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
 
 @section('title', 'Attendance')
 
@@ -78,7 +78,7 @@
                     <tr>
                         <td>{{ $attendance->member->first_name }} {{ $attendance->member->last_name }}<br>{{ $attendance->member->user->email }}</td>
                         <td>{{ $attendance->check_in_at->format('M j, Y g:i A') }}</td>
-                        <td>{{ $attendance->check_out_at?->format('M j, Y g:i A') ?? '—' }}</td>
+                        <td>{{ $attendance->check_out_at?->format('M j, Y g:i A') ?? '&#8212;' }}</td>
                         <td>{{ $attendance->attendance_source }}</td>
                         <td>{{ $attendance->check_out_at === null ? 'Open' : 'Closed' }}</td>
                         <td>
@@ -135,3 +135,5 @@
     })();
 </script>
 @endsection
+
+

@@ -76,6 +76,10 @@ class MembershipController extends Controller
         return view('memberships.index', [
             'routePrefix' => $routePrefix,
             'memberships' => $memberships,
+            'plans' => Membership::query()->select('plan_name_snapshot')->distinct()->orderBy('plan_name_snapshot')->pluck('plan_name_snapshot'),
+            'activeMembershipCount' => Membership::query()->where('membership_status', 'Active')->whereDate('start_date', '<=', $today)->whereDate('end_date', '>=', $today)->count(),
+            'expiringMembershipCount' => Membership::query()->where('membership_status', 'Active')->whereDate('end_date', '>=', $today)->whereDate('end_date', '<=', today()->addDays(7)->toDateString())->count(),
+            'expiredMembershipCount' => Membership::query()->where(function (Builder $query) use ($today): void { $query->where('membership_status', 'Expired')->orWhere(function (Builder $active) use ($today): void { $active->where('membership_status', 'Active')->whereDate('end_date', '<', $today); }); })->count(),
             'search' => $validated['search'] ?? '',
             'status' => $validated['status'] ?? '',
         ]);
@@ -100,8 +104,21 @@ class MembershipController extends Controller
 
     public function assignForm(Request $request): View
     {
+        $selectedMember = null;
+        if ($request->filled('member_id')) {
+            $selectedMember = Member::query()->with('user')->whereKey($request->integer('member_id'))->where('member_status', 'Active')->first();
+        }
+
+        $selectedMembership = $selectedMember?->memberships()
+            ->whereIn('membership_status', ['Active', 'Expired'])
+            ->orderByDesc('end_date')
+            ->orderByDesc('membership_id')
+            ->first();
+
         return view('memberships.assign', [
             'routePrefix' => $this->routePrefix($request),
+            'selectedMember' => $selectedMember,
+            'selectedMembership' => $selectedMembership,
             'members' => Member::query()
                 ->with('user')
                 ->where('member_status', 'Active')
@@ -114,6 +131,7 @@ class MembershipController extends Controller
                 ->get(),
             'renewableMemberships' => Membership::query()
                 ->with('member')
+                ->when($selectedMember, fn (Builder $query): Builder => $query->where('member_id', $selectedMember->member_id))
                 ->whereIn('membership_status', ['Active', 'Expired'])
                 ->orderByDesc('start_date')
                 ->orderByDesc('membership_id')
@@ -289,7 +307,7 @@ class MembershipController extends Controller
 
             if ($hasOtherCurrentMembership) {
                 throw ValidationException::withMessages([
-                    'membership_id' => 'Renew the member’s current or most recent membership.',
+                    'membership_id' => 'Renew the memberÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢s current or most recent membership.',
                 ]);
             }
 

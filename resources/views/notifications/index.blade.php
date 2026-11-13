@@ -16,7 +16,7 @@
                     <span class="status">{{ $notification->is_read ? 'Read' : 'Unread' }}</span>
                 </div>
                 <p>{{ $notification->message }}</p>
-                <p class="muted">{{ $notification->notification_type }} · {{ $notification->created_at->format('M j, Y g:i A') }}</p>
+                <p class="muted">{{ $notification->notification_type }} &middot; {{ $notification->created_at->format('M j, Y g:i A') }}</p>
                 <h3>Delivery status</h3>
                 <ul>
                     @forelse ($notification->deliveries as $delivery)
@@ -38,7 +38,7 @@
                             <button type="submit">Mark as read</button>
                         </form>
                     @endunless
-                    <form method="POST" action="{{ route($routePrefix.'notifications.destroy', $notification) }}">
+                    <form method="POST" action="{{ route($routePrefix.'notifications.destroy', $notification) }}" data-confirm="true" data-confirm-title="Delete notification?" data-confirm-message="This notification will be permanently removed." data-confirm-label="Delete">
                         @csrf
                         @method('DELETE')
                         <button class="danger" type="submit">Delete notification</button>
@@ -50,3 +50,5 @@
     @endif
 </section>
 @endsection
+
+

@@ -1,4 +1,4 @@
-@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
+﻿@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
 
 @section('title', 'Membership Requests')
 
@@ -39,7 +39,7 @@
                         <td>{{ $membershipRequest->member->first_name }} {{ $membershipRequest->member->last_name }}<br>{{ $membershipRequest->member->user->email }}</td>
                         <td>{{ $membershipRequest->request_type }}</td>
                         <td>{{ $membershipRequest->plan?->plan_name ?? 'Unavailable' }}</td>
-                        <td>{{ $membershipRequest->request_reason ?? '—' }}</td>
+                        <td>{{ $membershipRequest->request_reason ?? '&#8212;' }}</td>
                         <td>{{ $membershipRequest->requested_at->format('M j, Y g:i A') }}</td>
                         <td>{{ $membershipRequest->request_status }}</td>
                         <td>
@@ -58,3 +58,5 @@
     @endif
 </section>
 @endsection
+
+

@@ -1,4 +1,4 @@
-@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
+﻿@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
 
 @section('title', 'Plan Details')
 
@@ -13,15 +13,17 @@
 </div>
 <section class="card">
     <dl>
-        <dt>Description</dt><dd>{{ $plan->description ?? '—' }}</dd>
+        <dt>Description</dt><dd>{{ $plan->description ?? '&#8212;' }}</dd>
         <dt>Duration</dt><dd>{{ $plan->duration_days }} days</dd>
         <dt>Price</dt><dd>{{ number_format((float) $plan->price, 2) }}</dd>
         <dt>Status</dt><dd>{{ $plan->plan_status }}</dd>
         <dt>Membership records</dt><dd>{{ $plan->memberships_count }}</dd>
         <dt>Requests</dt><dd>{{ $plan->requests_count }}</dd>
-        <dt>Created</dt><dd>{{ $plan->created_at?->format('M j, Y') ?? '—' }}</dd>
-        <dt>Updated</dt><dd>{{ $plan->updated_at?->format('M j, Y') ?? '—' }}</dd>
+        <dt>Created</dt><dd>{{ $plan->created_at?->format('M j, Y') ?? '&#8212;' }}</dd>
+        <dt>Updated</dt><dd>{{ $plan->updated_at?->format('M j, Y') ?? '&#8212;' }}</dd>
     </dl>
 </section>
 <p><a href="{{ route($routePrefix.'membership-plans.index') }}">Back to plans</a></p>
 @endsection
+
+

@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Refund Requests')
 
@@ -32,7 +32,7 @@
                         <td>{{ $refund->requester->first_name }} {{ $refund->requester->last_name }}</td>
                         <td>{{ $refund->reason }}</td>
                         <td>{{ number_format((float) $refund->requested_amount, 2) }}</td>
-                        <td>{{ $refund->approved_amount === null ? '—' : number_format((float) $refund->approved_amount, 2) }}</td>
+                        <td>{{ $refund->approved_amount === null ? '&#8212;' : number_format((float) $refund->approved_amount, 2) }}</td>
                         <td>{{ $refund->refund_status }}</td>
                         <td>
                             @if ($refund->refund_status === 'Pending')
@@ -50,3 +50,5 @@
     @endif
 </section>
 @endsection
+
+

@@ -8,63 +8,17 @@
         $greeting = $hour < 12 ? 'Good morning' : ($hour < 18 ? 'Good afternoon' : 'Good evening');
         $maxCheckIns = max(array_column($attendanceChart, 'value'));
         $maxMonthlyPayments = max(array_column($revenueChart, 'value'));
+        $attendanceMax = max(1, $maxCheckIns);
+        $revenueMax = max(1, $maxMonthlyPayments);
+        $attendanceChartStep = 700 / max(count($attendanceChart) - 1, 1);
+        $revenueChartStep = 700 / max(count($revenueChart) - 1, 1);
+        $peakAttendance = collect($attendanceChart)->sortByDesc('value')->first();
+
         $kpis = [
-            [
-                'label' => 'Total members',
-                'value' => $totalMembers,
-                'description' => 'Member profiles on record',
-                'route' => route('admin.members.index'),
-                'icon' => 'members',
-            ],
-            [
-                'label' => 'Active members',
-                'value' => $activeMembers,
-                'description' => 'Member accounts marked active',
-                'route' => route('admin.members.index'),
-                'icon' => 'active',
-            ],
-            [
-                'label' => 'Active memberships',
-                'value' => $activeMemberships,
-                'description' => 'Valid today',
-                'route' => route('admin.memberships.index'),
-                'icon' => 'membership',
-            ],
-            [
-                'label' => 'Check-ins today',
-                'value' => $attendance['checkInsToday'],
-                'description' => 'Recorded through now',
-                'route' => route('admin.attendance.index'),
-                'icon' => 'checkin',
-            ],
-            [
-                'label' => 'Currently in gym',
-                'value' => $attendance['currentlyInGym'],
-                'description' => 'Open attendance sessions',
-                'route' => route('admin.attendance.index'),
-                'icon' => 'occupancy',
-            ],
-            [
-                'label' => 'Pending payments',
-                'value' => 'Not tracked',
-                'description' => 'Payment records have no pending status',
-                'route' => null,
-                'icon' => 'payment',
-            ],
-            [
-                'label' => 'Expiring memberships',
-                'value' => $expiringMembershipCount,
-                'description' => 'Within the next 7 days',
-                'route' => route('admin.memberships.index'),
-                'icon' => 'expiry',
-            ],
-            [
-                'label' => 'Equipment alerts',
-                'value' => $equipmentAlertCount,
-                'description' => 'Maintenance or usage threshold',
-                'route' => route('admin.equipment.index'),
-                'icon' => 'equipment',
-            ],
+            ['label' => 'Total members', 'value' => $totalMembers, 'description' => 'Registered member profiles', 'route' => route('admin.members.index'), 'icon' => 'members'],
+            ['label' => 'Active memberships', 'value' => $activeMemberships, 'description' => 'Valid today', 'route' => route('admin.members.index'), 'icon' => 'membership'],
+            ['label' => 'Check-ins today', 'value' => $attendance['checkInsToday'], 'description' => 'Recorded today', 'route' => route('admin.attendance.index'), 'icon' => 'checkin'],
+            ['label' => 'Currently in gym', 'value' => $attendance['currentlyInGym'], 'description' => 'Open attendance sessions', 'route' => route('admin.attendance.index'), 'icon' => 'occupancy'],
         ];
     @endphp
 
@@ -128,10 +82,7 @@
                     <strong>{{ $kpi['value'] }}</strong>
                     <span class="admin-kpi-description">{{ $kpi['description'] }}</span>
                 </span>
-                @if ($kpi['route'])
-                    <span class="admin-kpi-arrow" aria-hidden="true">↗</span>
-                @endif
-            @if ($kpi['route'])
+@if ($kpi['route'])
                 </a>
             @else
                 </article>
@@ -139,7 +90,7 @@
         @endforeach
     </section>
 
-    <section class="admin-section" aria-labelledby="admin-analytics-title">
+    <section id="admin-analytics" class="admin-section" aria-labelledby="admin-analytics-title">
         <div class="admin-section-heading">
             <div>
                 <h2 id="admin-analytics-title">Analytics</h2>
@@ -153,19 +104,18 @@
                         <span class="admin-chart-kicker">Gym activity</span>
                         <h3>Attendance trends</h3>
                     </div>
-                    <span class="admin-chart-range">Last 7 days</span>
+                    <span class="admin-chart-stat">Peak: <strong>{{ $peakAttendance['value'] ?? 0 }}</strong> check-ins &middot; {{ $peakAttendance['period'] ?? 'No data' }}</span>
                 </figcaption>
-                <ol class="admin-bar-chart" aria-label="Daily check-ins during the last 7 days">
-                    @foreach ($attendanceChart as $day)
-                        <li class="admin-bar-column" title="{{ $day['period'] }}: {{ $day['value'] }} check-ins" aria-label="{{ $day['period'] }}: {{ $day['value'] }} check-ins">
-                            <span class="admin-bar-value">{{ $day['value'] }}</span>
-                            <span class="admin-bar-track" aria-hidden="true">
-                                <span class="admin-bar-fill" style="--bar-height: {{ $maxCheckIns > 0 ? ($day['value'] / $maxCheckIns) * 100 : 0 }}%"></span>
-                            </span>
-                            <span class="admin-bar-label">{{ $day['label'] }}</span>
-                        </li>
-                    @endforeach
-                </ol>
+                <div class="admin-line-chart" role="img" aria-label="Daily check-ins during the last 7 days">
+                    <svg viewBox="0 0 700 250" preserveAspectRatio="none" aria-hidden="true">
+                        <defs><linearGradient id="attendanceFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#73a7ff" stop-opacity=".32"/><stop offset="1" stop-color="#73a7ff" stop-opacity="0"/></linearGradient></defs>
+                        @for ($grid = 1; $grid <= 4; $grid++) <line class="admin-chart-gridline" x1="0" x2="700" y1="{{ 20 + ($grid * 42) }}" y2="{{ 20 + ($grid * 42) }}"/> @endfor
+                        <polygon class="admin-chart-area" points="0,230 @foreach ($attendanceChart as $index => $day) {{ $index * $attendanceChartStep }},{{ 220 - (($day['value'] / $attendanceMax) * 180) }} @endforeach 700,230"/>
+                        <polyline class="admin-chart-line" points="@foreach ($attendanceChart as $index => $day) {{ $index * $attendanceChartStep }},{{ 220 - (($day['value'] / $attendanceMax) * 180) }} @endforeach"/>
+                        @foreach ($attendanceChart as $index => $day)<circle class="admin-chart-dot" cx="{{ $index * $attendanceChartStep }}" cy="{{ 220 - (($day['value'] / $attendanceMax) * 180) }}" r="5"><title>{{ $day['period'] }}: {{ $day['value'] }} check-ins</title></circle>@endforeach
+                    </svg>
+                    <div class="admin-line-labels" style="--chart-label-count: {{ count($attendanceChart) }};">@foreach ($attendanceChart as $day)<span>{{ $day['label'] }}</span>@endforeach</div>
+                </div>
                 @if ($maxCheckIns === 0)
                     <p class="admin-chart-empty">No check-ins recorded in this period.</p>
                 @endif
@@ -175,21 +125,26 @@
                 <figcaption class="admin-chart-heading">
                     <div>
                         <span class="admin-chart-kicker">Revenue</span>
-                        <h3>Revenue overview <span class="admin-currency">(PHP · ₱)</span></h3>
+                        <h3>Revenue overview <span class="admin-currency">(PHP &middot; &#8369;)</span></h3>
                     </div>
-                    <span class="admin-chart-range">Last 6 months</span>
+                    <form class="admin-chart-filter" method="get" data-dashboard-filter>
+                        <label for="revenue-range">Revenue period</label>
+                        <select id="revenue-range" name="revenue_range" aria-label="Revenue chart range">
+                            <option value="6" @selected($revenueMonths === 6)>6 months</option>
+                            <option value="12" @selected($revenueMonths === 12)>12 months</option>
+                        </select>
+                    </form>
                 </figcaption>
-                <ol class="admin-bar-chart admin-bar-chart--six" aria-label="Payments received each month during the last 6 months, in Philippine pesos">
-                    @foreach ($revenueChart as $month)
-                        <li class="admin-bar-column" title="{{ $month['period'] }}: ₱{{ number_format($month['value'], 2) }}" aria-label="{{ $month['period'] }}: {{ number_format($month['value'], 2) }} Philippine pesos">
-                            <span class="admin-bar-value" title="₱{{ number_format($month['value'], 2) }}">₱{{ number_format($month['value'], 0) }}</span>
-                            <span class="admin-bar-track" aria-hidden="true">
-                                <span class="admin-bar-fill" style="--bar-height: {{ $maxMonthlyPayments > 0 ? ($month['value'] / $maxMonthlyPayments) * 100 : 0 }}%"></span>
-                            </span>
-                            <span class="admin-bar-label">{{ $month['label'] }}</span>
-                        </li>
-                    @endforeach
-                </ol>
+                <div class="admin-line-chart" role="img" aria-label="Payments received each month during the last 6 months, in Philippine pesos">
+                    <svg viewBox="0 0 700 250" preserveAspectRatio="none" aria-hidden="true">
+                        <defs><linearGradient id="revenueFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#70d6b2" stop-opacity=".3"/><stop offset="1" stop-color="#70d6b2" stop-opacity="0"/></linearGradient></defs>
+                        @for ($grid = 1; $grid <= 4; $grid++) <line class="admin-chart-gridline" x1="0" x2="700" y1="{{ 20 + ($grid * 42) }}" y2="{{ 20 + ($grid * 42) }}"/> @endfor
+                        <polygon class="admin-chart-area admin-chart-area--green" points="0,230 @foreach ($revenueChart as $index => $month) {{ $index * $revenueChartStep }},{{ 220 - (($month['value'] / $revenueMax) * 180) }} @endforeach 700,230"/>
+                        <polyline class="admin-chart-line admin-chart-line--green" points="@foreach ($revenueChart as $index => $month) {{ $index * $revenueChartStep }},{{ 220 - (($month['value'] / $revenueMax) * 180) }} @endforeach"/>
+                        @foreach ($revenueChart as $index => $month)<circle class="admin-chart-dot admin-chart-dot--green" cx="{{ $index * $revenueChartStep }}" cy="{{ 220 - (($month['value'] / $revenueMax) * 180) }}" r="5"><title>{{ $month['period'] }}: ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±{{ number_format($month['value'], 2) }}</title></circle>@endforeach
+                    </svg>
+                    <div class="admin-line-labels" style="--chart-label-count: {{ count($revenueChart) }};">@foreach ($revenueChart as $month)<span>{{ $month['label'] }}</span>@endforeach</div>
+                </div>
                 @if ($maxMonthlyPayments <= 0)
                     <p class="admin-chart-empty">No payment records in this period.</p>
                 @endif
@@ -209,20 +164,20 @@
         <div class="admin-revenue-metrics">
             <div>
                 <span>Payments received</span>
-                <strong>₱{{ number_format((float) $grossRevenue, 2) }}</strong>
+                <strong>&#8369;{{ number_format((float) $grossRevenue, 2) }}</strong>
             </div>
             <div>
                 <span>Approved refunds</span>
-                <strong>₱{{ number_format((float) $approvedRefunds, 2) }}</strong>
+                <strong>&#8369;{{ number_format((float) $approvedRefunds, 2) }}</strong>
             </div>
             <div class="admin-net-revenue">
                 <span>Net revenue</span>
-                <strong>₱{{ number_format((float) $netRevenue, 2) }}</strong>
+                <strong>&#8369;{{ number_format((float) $netRevenue, 2) }}</strong>
             </div>
         </div>
         <div class="admin-revenue-links">
-            <a href="{{ route('admin.payments.index') }}">View payments <span aria-hidden="true">→</span></a>
-            <a href="{{ route('admin.refunds.index') }}">View refunds <span aria-hidden="true">→</span></a>
+            <a href="{{ route('admin.payments.index') }}">View payments <span aria-hidden="true">&rarr;</span></a>
+            <a href="{{ route('admin.refunds.index') }}">View refunds <span aria-hidden="true">&rarr;</span></a>
         </div>
     </section>
 
@@ -280,7 +235,7 @@
                             @foreach ($expiringMemberships as $membership)
                                 <li>
                                     {{ $membership->member?->first_name }} {{ $membership->member?->last_name }}
-                                    <span>{{ $membership->plan_name_snapshot }} · {{ $membership->end_date->format('M j, Y') }}</span>
+                                    <span>{{ $membership->plan_name_snapshot }} &middot; {{ $membership->end_date->format('M j, Y') }}</span>
                                 </li>
                             @endforeach
                         </ul>
@@ -305,10 +260,10 @@
                                     <strong>{{ $equipment->equipment_name }}</strong>
                                     <span>{{ $equipment->equipment_status }}
                                         @if ($equipment->maintenanceRecords->isNotEmpty())
-                                            · {{ $equipment->maintenanceRecords->first()->maintenance_status }}
+                                            &middot; {{ $equipment->maintenanceRecords->first()->maintenance_status }}
                                         @endif
                                         @if ($equipment->usage_threshold !== null && $equipment->usage_since_maintenance >= $equipment->usage_threshold)
-                                            · usage {{ $equipment->usage_since_maintenance }} / threshold {{ $equipment->usage_threshold }}
+                                            &middot; usage {{ $equipment->usage_since_maintenance }} / threshold {{ $equipment->usage_threshold }}
                                         @endif
                                     </span>
                                 </li>
@@ -326,11 +281,11 @@
                     </div>
                 </div>
                 <div class="admin-action-grid">
-                    <a href="{{ route('admin.members.create') }}"><span aria-hidden="true">＋</span> Add member</a>
-                    <a href="{{ route('admin.payments.create') }}"><span aria-hidden="true">＋</span> Record payment</a>
-                    <a href="{{ route('admin.attendance.index') }}"><span aria-hidden="true">↗</span> View attendance</a>
-                    <a href="{{ route('admin.equipment.create') }}"><span aria-hidden="true">＋</span> Add equipment</a>
-                    <a href="{{ route('admin.membership-plans.index') }}"><span aria-hidden="true">↗</span> Manage plans</a>
+                    <a href="{{ route('admin.members.create') }}"><span aria-hidden="true">&#65291;</span> Add member</a>
+                    <a href="{{ route('admin.payments.create') }}"><span aria-hidden="true">&#65291;</span> Record payment</a>
+                    <a href="{{ route('admin.attendance.index') }}"><span aria-hidden="true">&#8599;</span> View attendance</a>
+                    <a href="{{ route('admin.equipment.create') }}"><span aria-hidden="true">&#65291;</span> Add equipment</a>
+                    <a href="{{ route('admin.membership-plans.index') }}"><span aria-hidden="true">&#8599;</span> Manage plans</a>
                 </div>
                 <p class="admin-quick-action-note">Online application review is not currently available in the Admin routes.</p>
             </div>
@@ -358,14 +313,14 @@
                                     {{ $activity->user
                                         ? trim($activity->user->first_name.' '.$activity->user->last_name)
                                         : 'System' }}
-                                    · {{ $activity->affected_entity }}
+                                    &middot; {{ $activity->affected_entity }}
                                     @if ($activity->affected_record_id)
                                         #{{ $activity->affected_record_id }}
                                     @endif
                                 </span>
                             </div>
-                            <time datetime="{{ $activity->created_at->toIso8601String() }}">
-                                {{ $activity->created_at->format('M j, Y · g:i A') }}
+                            <time datetime="{{ $activity->created_at->toIso8601String() }}" title="{{ $activity->created_at->format('M j, Y, g:i A') }}">
+                                {{ $activity->created_at->diffForHumans() }}
                             </time>
                         </li>
                     @endforeach
@@ -374,3 +329,7 @@
         </div>
     </section>
 @endsection
+
+
+
+

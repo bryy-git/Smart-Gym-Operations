@@ -1,4 +1,4 @@
-@extends('layouts.account')
+﻿@extends('layouts.account')
 
 @section('title', 'Payment History')
 
@@ -18,8 +18,8 @@
                         <td>{{ $payment->membership->plan_name_snapshot }}</td>
                         <td>{{ number_format((float) $payment->amount, 2) }}</td>
                         <td>{{ $payment->payment_method }}</td>
-                        <td>{{ $payment->reference_number ?? '—' }}</td>
-                        <td><a href="{{ route('member.payments.show', $payment) }}">Details</a> · <a href="{{ route('member.payments.receipt', $payment) }}">Receipt</a></td>
+                        <td>{{ $payment->reference_number ?? '&#8212;' }}</td>
+                        <td><a href="{{ route('member.payments.show', $payment) }}">Details</a> &middot; <a href="{{ route('member.payments.receipt', $payment) }}">Receipt</a></td>
                     </tr>
                 @endforeach
                 </tbody>
@@ -29,3 +29,5 @@
     @endif
 </section>
 @endsection
+
+

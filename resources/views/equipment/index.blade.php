@@ -1,4 +1,4 @@
-@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
+﻿@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
 
 @section('title', 'Equipment')
 
@@ -61,3 +61,4 @@
     @endif
 </section>
 @endsection
+

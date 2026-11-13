@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+﻿@extends('layouts.staff')
 
 @section('title', 'My Refund Requests')
 
@@ -19,7 +19,7 @@
                         <td>{{ $refund->payment->membership->member->first_name }} {{ $refund->payment->membership->member->last_name }}</td>
                         <td>{{ $refund->reason }}</td>
                         <td>{{ number_format((float) $refund->requested_amount, 2) }}</td>
-                        <td>{{ $refund->approved_amount === null ? '—' : number_format((float) $refund->approved_amount, 2) }}</td>
+                        <td>{{ $refund->approved_amount === null ? '&#8212;' : number_format((float) $refund->approved_amount, 2) }}</td>
                         <td>{{ $refund->refund_status }}</td>
                         <td><a href="{{ route('staff.refunds.show', $refund) }}">View</a></td>
                     </tr>
@@ -31,3 +31,5 @@
     @endif
 </section>
 @endsection
+
+

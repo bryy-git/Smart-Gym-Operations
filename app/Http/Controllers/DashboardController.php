@@ -21,7 +21,7 @@ use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function admin(EquipmentAlertService $equipmentAlertService): View
+    public function admin(Request $request, EquipmentAlertService $equipmentAlertService): View
     {
         $today = today();
         $now = now();
@@ -52,7 +52,9 @@ class DashboardController extends Controller
             ->limit(8)
             ->get();
 
-        $revenueChartStart = $now->copy()->startOfMonth()->subMonths(5);
+        $attendanceDays = in_array((int) $request->query('attendance_range', 7), [7, 14, 30], true) ? (int) $request->query('attendance_range', 7) : 7;
+        $revenueMonths = in_array((int) $request->query('revenue_range', 6), [6, 12], true) ? (int) $request->query('revenue_range', 6) : 6;
+        $revenueChartStart = $now->copy()->startOfMonth()->subMonths($revenueMonths - 1);
         $paymentsByDay = Payment::query()
             ->selectRaw('DATE(payment_date) as payment_day, SUM(amount) as total')
             ->where('payment_date', '>=', $revenueChartStart)
@@ -71,14 +73,14 @@ class DashboardController extends Controller
             ->whereBetween('reviewed_at', [$now->copy()->startOfMonth(), $now])
             ->sum('approved_amount');
 
-        $attendanceChartStart = $today->copy()->subDays(6)->startOfDay();
+        $attendanceChartStart = $today->copy()->subDays($attendanceDays - 1)->startOfDay();
         $attendanceCountsByDate = Attendance::query()
             ->selectRaw('DATE(check_in_at) as chart_date, COUNT(*) as total')
             ->where('check_in_at', '>=', $attendanceChartStart)
             ->where('check_in_at', '<=', $now)
             ->groupByRaw('DATE(check_in_at)')
             ->pluck('total', 'chart_date');
-        $attendanceChart = collect(range(6, 0))
+        $attendanceChart = collect(range($attendanceDays - 1, 0))
             ->map(function (int $daysAgo) use ($today, $attendanceCountsByDate): array {
                 $date = $today->copy()->subDays($daysAgo);
 
@@ -90,7 +92,7 @@ class DashboardController extends Controller
             })
             ->all();
 
-        $revenueChart = collect(range(0, 5))
+        $revenueChart = collect(range(0, $revenueMonths - 1))
             ->map(function (int $monthsAgo) use ($revenueChartStart, $paymentsByMonth): array {
                 $monthStart = $revenueChartStart->copy()->addMonths($monthsAgo);
                 $monthKey = $monthStart->format('Y-m');
@@ -130,7 +132,9 @@ class DashboardController extends Controller
             'approvedRefunds' => $approvedRefunds,
             'netRevenue' => round((float) $grossRevenue - (float) $approvedRefunds, 2),
             'attendanceChart' => $attendanceChart,
+            'attendanceDays' => $attendanceDays,
             'revenueChart' => $revenueChart,
+            'revenueMonths' => $revenueMonths,
         ]);
     }
 
@@ -195,6 +199,9 @@ class DashboardController extends Controller
         $recentAttendance = collect();
         $paymentTotal = 0;
         $recentPayments = collect();
+        $attendanceYear = max($today->year - 5, min($today->year, (int) $request->integer('attendance_year', $today->year)));
+        $attendanceHeatmap = collect();
+        $attendanceMonthLabels = collect();
 
         if ($member !== null) {
             $membership = $member->memberships()
@@ -225,6 +232,26 @@ class DashboardController extends Controller
                 ->where('check_in_at', '>=', $attendanceStart)
                 ->where('check_in_at', '<=', $now);
             $attendanceCount = (clone $attendanceQuery)->count();
+            $heatmapYearStart = Carbon::create($attendanceYear, 1, 1)->startOfDay();
+            $heatmapCalendarStart = $heatmapYearStart->copy()->startOfWeek(Carbon::SUNDAY);
+            $heatmapYearEnd = $heatmapYearStart->copy()->endOfYear();
+            $attendanceByDate = $member->attendances()
+                ->whereBetween('check_in_at', [$heatmapYearStart, $heatmapYearEnd])
+                ->get()
+                ->groupBy(fn (Attendance $record): string => $record->check_in_at->toDateString());
+            $attendanceHeatmap = collect(range(0, 370))->map(function (int $offset) use ($heatmapCalendarStart, $heatmapYearStart, $heatmapYearEnd, $attendanceByDate): array {
+                $date = $heatmapCalendarStart->copy()->addDays($offset);
+                $isInYear = $date->betweenIncluded($heatmapYearStart, $heatmapYearEnd);
+                $records = $isInYear ? $attendanceByDate->get($date->toDateString(), collect()) : collect();
+                $count = $records->count();
+                $minutes = $records->sum(fn (Attendance $record): int => $record->check_in_at->diffInMinutes($record->check_out_at ?? now()));
+
+                return ['date' => $date, 'count' => $count, 'hours' => round($minutes / 60, 1), 'level' => $isInYear ? min(4, $count) : 0, 'outside' => ! $isInYear];
+            });
+            $attendanceMonthLabels = collect(range(1, 12))->map(function (int $month) use ($heatmapCalendarStart, $attendanceYear): array {
+                $date = Carbon::create($attendanceYear, $month, 1);
+                return ['label' => $date->format('M'), 'week' => intdiv($heatmapCalendarStart->diffInDays($date), 7) + 1];
+            });
             $recentAttendance = $attendanceQuery
                 ->orderByDesc('check_in_at')
                 ->limit(5)
@@ -259,6 +286,9 @@ class DashboardController extends Controller
             'recentAttendance' => $recentAttendance,
             'paymentTotal' => $paymentTotal,
             'recentPayments' => $recentPayments,
+            'attendanceHeatmap' => $attendanceHeatmap,
+            'attendanceYear' => $attendanceYear,
+            'attendanceMonthLabels' => $attendanceMonthLabels,
             'notifications' => $notifications,
             'announcements' => $announcements,
             'relevantClosures' => $closureAnnouncementService->relevant()->limit(5)->get(),
@@ -301,3 +331,5 @@ class DashboardController extends Controller
             ->whereBetween('end_date', [$today->toDateString(), $limit->toDateString()]);
     }
 }
+
+

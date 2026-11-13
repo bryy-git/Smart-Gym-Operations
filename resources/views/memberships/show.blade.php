@@ -1,10 +1,10 @@
-@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
+﻿@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
 
 @section('title', 'Membership Details')
 
 @section('content')
 <p class="breadcrumb"><a href="{{ route($routePrefix.'memberships.index') }}">Memberships</a> / Membership Details</p>
-<h1>{{ $membership->plan_name_snapshot }} — {{ $membership->member->first_name }} {{ $membership->member->last_name }}</h1>
+<h1>{{ $membership->plan_name_snapshot }} &#8212; {{ $membership->member->first_name }} {{ $membership->member->last_name }}</h1>
 <section class="card">
     <dl>
         <dt>Member</dt><dd>{{ $membership->member->first_name }} {{ $membership->member->last_name }}</dd>
@@ -34,7 +34,7 @@
                         <td>{{ $payment->payment_date->format('M j, Y g:i A') }}</td>
                         <td>{{ number_format((float) $payment->amount, 2) }}</td>
                         <td>{{ $payment->payment_method }}</td>
-                        <td>{{ $payment->reference_number ?? '—' }}</td>
+                        <td>{{ $payment->reference_number ?? '&#8212;' }}</td>
                         <td>{{ $payment->receiver?->first_name }} {{ $payment->receiver?->last_name }}</td>
                     </tr>
                 @endforeach
@@ -51,9 +51,11 @@
     @else
         <ul>
             @foreach ($membership->requests as $membershipRequest)
-                <li>{{ $membershipRequest->request_type }} — {{ $membershipRequest->request_status }} — {{ $membershipRequest->requested_at->format('M j, Y g:i A') }}</li>
+                <li>{{ $membershipRequest->request_type }} &#8212; {{ $membershipRequest->request_status }} &#8212; {{ $membershipRequest->requested_at->format('M j, Y g:i A') }}</li>
             @endforeach
         </ul>
     @endif
 </section>
 @endsection
+
+

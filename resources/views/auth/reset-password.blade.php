@@ -1,4 +1,4 @@
-@extends('layouts.account')
+﻿@extends('layouts.account')
 
 @section('title', 'Choose a new password')
 
@@ -36,3 +36,4 @@
         <button type="submit" data-loading-label="Resetting password...">Reset password</button>
     </form>
 @endsection
+

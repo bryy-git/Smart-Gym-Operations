@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @php
     $creating = $closure === null;
@@ -43,3 +43,4 @@
     </form>
 </section>
 @endsection
+

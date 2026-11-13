@@ -1,4 +1,4 @@
-@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
+﻿@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
 
 @section('title', 'Record Payment')
 
@@ -18,8 +18,8 @@
                     @foreach ($memberships as $membership)
                         <option value="{{ $membership->membership_id }}" @selected((string) old('membership_id') === (string) $membership->membership_id)>
                             {{ $membership->member->first_name }} {{ $membership->member->last_name }}
-                            — {{ $membership->plan_name_snapshot }}
-                            — {{ $membership->start_date->format('M j, Y') }} to {{ $membership->end_date->format('M j, Y') }}
+                            &#8212; {{ $membership->plan_name_snapshot }}
+                            &#8212; {{ $membership->start_date->format('M j, Y') }} to {{ $membership->end_date->format('M j, Y') }}
                         </option>
                     @endforeach
                 </select>
@@ -57,3 +57,5 @@
     @endif
 </section>
 @endsection
+
+

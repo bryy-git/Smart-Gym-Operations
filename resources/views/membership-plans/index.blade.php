@@ -53,11 +53,11 @@
                         </td>
                         <td>{{ $plan->duration_days }} days</td>
                         <td>{{ number_format((float) $plan->price, 2) }}</td>
-                        <td><span class="status">{{ $plan->plan_status }}</span></td>
+                        <td><span class="status admin-status-badge admin-status-badge--{{ strtolower($plan->plan_status) }}">{{ $plan->plan_status }}</span></td>
                         <td>
-                            <div class="actions">
-                                <a href="{{ route($routePrefix.'membership-plans.edit', $plan) }}">Edit</a>
-                                <form method="POST" action="{{ route($routePrefix.'membership-plans.status.update', $plan) }}">
+                            <div class="actions plan-actions">
+                                <a class="plan-action-link" href="{{ route($routePrefix.'membership-plans.edit', $plan) }}">Edit</a>
+                                <form class="plan-status-form" method="POST" action="{{ route($routePrefix.'membership-plans.status.update', $plan) }}" @if ($plan->plan_status === 'Active') data-confirm="true" data-confirm-title="Deactivate membership plan?" data-confirm-message="Existing memberships will keep their current plan details, but this plan will no longer be available for new assignments." data-confirm-label="Deactivate" @endif>
                                     @csrf
                                     @method('PATCH')
                                     <input type="hidden" name="plan_status" value="{{ $plan->plan_status === 'Active' ? 'Inactive' : 'Active' }}">
@@ -76,3 +76,4 @@
     @endif
 </section>
 @endsection
+

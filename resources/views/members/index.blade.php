@@ -12,6 +12,12 @@
     <a class="button" href="{{ route($routePrefix.'members.create') }}">Add Member</a>
 </div>
 
+<section class="admin-record-summary" aria-label="Member overview">
+    <div><span>Total members</span><strong>{{ $totalMemberCount }}</strong></div>
+    <div><span>Active members</span><strong>{{ $activeMemberCount }}</strong></div>
+    <div><span>Inactive members</span><strong>{{ $inactiveMemberCount }}</strong></div>
+</section>
+
 <section class="card" aria-label="Member search and filters">
     <form class="filters" id="member-filters" method="GET" action="{{ route($routePrefix.'members.index') }}">
         <label for="search">Search</label>
@@ -70,9 +76,9 @@
                         </td>
                         <td>{{ $member->user->email }}</td>
                         <td>{{ $member->phone }}</td>
-                        <td><span class="status">{{ $member->member_status }}</span></td>
-                        <td><span class="status">{{ $member->user->account_status }}</span></td>
-                        <td>{{ $member->created_at?->format('M j, Y') ?? '—' }}</td>
+                        <td><span class="status admin-status-badge admin-status-badge--{{ strtolower($member->member_status) }}">{{ $member->member_status }}</span></td>
+                        <td><span class="status admin-status-badge admin-status-badge--{{ strtolower($member->user->account_status) }}">{{ $member->user->account_status }}</span></td>
+                        <td>{{ $member->created_at?->format('M j, Y') ?? '&#8212;' }}</td>
                         <td>
                             <div class="actions">
                                 <a href="{{ route($routePrefix.'members.show', $member) }}">View</a>
@@ -99,3 +105,5 @@
     });
 </script>
 @endsection
+
+

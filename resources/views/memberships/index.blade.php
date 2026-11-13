@@ -49,9 +49,9 @@
                 @foreach ($memberships as $membership)
                     <tr>
                         <td>{{ $membership->member->first_name }} {{ $membership->member->last_name }}<br>{{ $membership->member->user->email }}</td>
-                        <td>{{ $membership->plan_name_snapshot }}<br>{{ number_format((float) $membership->plan_price_snapshot, 2) }} · {{ $membership->plan_duration_snapshot }} days</td>
-                        <td>{{ $membership->start_date->format('M j, Y') }} – {{ $membership->end_date->format('M j, Y') }}</td>
-                        <td><span class="status">{{ $membership->display_status }}</span></td>
+                        <td>{{ $membership->plan_name_snapshot }}<br>{{ number_format((float) $membership->plan_price_snapshot, 2) }} &middot; {{ $membership->plan_duration_snapshot }} days</td>
+                        <td>{{ $membership->start_date->format('M j, Y') }} &#8211; {{ $membership->end_date->format('M j, Y') }}</td>
+                        <td><span class="status admin-status-badge admin-status-badge--{{ strtolower(str_replace(' ', '-', $membership->display_status)) }}">{{ $membership->display_status }}</span></td>
                         <td><a href="{{ route($routePrefix.'memberships.show', $membership) }}">View</a></td>
                     </tr>
                 @endforeach
@@ -62,3 +62,5 @@
     @endif
 </section>
 @endsection
+
+

@@ -1,4 +1,4 @@
-@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
+﻿@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
 
 @section('title', 'Equipment Usage')
 
@@ -39,7 +39,7 @@
                         <td>{{ $record->usage_date->format('M j, Y') }}</td>
                         <td>{{ $record->usage_count }}</td>
                         <td>{{ $record->recorder->first_name }} {{ $record->recorder->last_name }}</td>
-                        <td>{{ $record->notes ?? '—' }}</td>
+                        <td>{{ $record->notes ?? '&#8212;' }}</td>
                     </tr>
                 @endforeach
                 </tbody>
@@ -49,3 +49,5 @@
     @endif
 </section>
 @endsection
+
+

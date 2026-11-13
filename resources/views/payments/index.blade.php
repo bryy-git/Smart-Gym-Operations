@@ -1,4 +1,4 @@
-@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
+﻿@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
 
 @section('title', 'Payments')
 
@@ -45,7 +45,7 @@
                         <td>{{ $payment->membership->plan_name_snapshot }}</td>
                         <td>{{ number_format((float) $payment->amount, 2) }}</td>
                         <td>{{ $payment->payment_method }}</td>
-                        <td>{{ $payment->reference_number ?? '—' }}</td>
+                        <td>{{ $payment->reference_number ?? '&#8212;' }}</td>
                         <td><a href="{{ route($routePrefix.'payments.show', $payment) }}">View</a></td>
                     </tr>
                 @endforeach
@@ -56,3 +56,5 @@
     @endif
 </section>
 @endsection
+
+

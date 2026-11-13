@@ -1,4 +1,4 @@
-@extends('layouts.account')
+﻿@extends('layouts.account')
 
 @section('title', 'My Membership Requests')
 
@@ -17,10 +17,10 @@
                     <tr>
                         <td>{{ $membershipRequest->request_type }}</td>
                         <td>{{ $membershipRequest->plan?->plan_name ?? 'Unavailable' }}</td>
-                        <td>{{ $membershipRequest->request_reason ?? '—' }}</td>
+                        <td>{{ $membershipRequest->request_reason ?? '&#8212;' }}</td>
                         <td>{{ $membershipRequest->requested_at->format('M j, Y g:i A') }}</td>
                         <td>{{ $membershipRequest->request_status }}</td>
-                        <td>{{ $membershipRequest->decision_reason ?? '—' }}</td>
+                        <td>{{ $membershipRequest->decision_reason ?? '&#8212;' }}</td>
                     </tr>
                 @endforeach
                 </tbody>
@@ -30,3 +30,5 @@
     @endif
 </section>
 @endsection
+
+

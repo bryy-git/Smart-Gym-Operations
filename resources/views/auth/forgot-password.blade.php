@@ -1,4 +1,4 @@
-@extends('layouts.account')
+﻿@extends('layouts.account')
 
 @section('title', 'Forgot password')
 
@@ -18,3 +18,4 @@
         <p class="auth-help"><a href="{{ route('login') }}">Back to log in</a></p>
     </form>
 @endsection
+

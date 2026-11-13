@@ -51,6 +51,9 @@ class MemberManagementController extends Controller
             'layout' => $this->layout($request),
             'routePrefix' => $this->routePrefix($request),
             'members' => $members,
+            'totalMemberCount' => Member::query()->count(),
+            'activeMemberCount' => Member::query()->where('member_status', 'Active')->count(),
+            'inactiveMemberCount' => Member::query()->where('member_status', 'Inactive')->count(),
             'search' => $validated['search'] ?? '',
             'status' => $validated['status'] ?? '',
             'hasFilters' => filled($validated['search'] ?? null) || filled($validated['status'] ?? null),
@@ -114,6 +117,7 @@ class MemberManagementController extends Controller
             'routePrefix' => $this->routePrefix($request),
             'member' => $member,
             'user' => $member->user,
+            'memberships' => $member->memberships()->with('plan')->orderByDesc('start_date')->orderByDesc('membership_id')->get(),
             'statusesMismatch' => $this->statusesMismatch($member),
         ]);
     }

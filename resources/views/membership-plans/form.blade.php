@@ -1,4 +1,4 @@
-@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
+﻿@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
 
 @php
     $creating = $plan === null;
@@ -45,3 +45,4 @@
     </form>
 </section>
 @endsection
+

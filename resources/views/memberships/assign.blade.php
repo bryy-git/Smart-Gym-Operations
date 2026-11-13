@@ -1,10 +1,10 @@
 @extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
 
-@section('title', 'Assign Paid Membership')
+@section('title', $selectedMember ? 'Reactivate Membership' : 'Assign Paid Membership')
 
 @section('content')
 <p class="breadcrumb"><a href="{{ route($routePrefix.'memberships.index') }}">Memberships</a> / Assign Paid Membership</p>
-<h1>Assign Paid Membership</h1>
+<h1>{{ $selectedMember ? 'Reactivate Membership' : 'Assign Paid Membership' }}</h1>
 <section class="card">
     <p>A successful assignment records the full active-plan price as a payment in the same transaction. Select a previous membership to process this as a renewal.</p>
     @if ($members->isEmpty())
@@ -16,14 +16,20 @@
             @csrf
             <div class="field">
                 <label for="member_id">Member</label>
-                <select id="member_id" name="member_id" required>
-                    <option value="">Select a member</option>
-                    @foreach ($members as $member)
-                        <option value="{{ $member->member_id }}" @selected((string) old('member_id') === (string) $member->member_id)>
-                            {{ $member->first_name }} {{ $member->last_name }} — {{ $member->user->email }}
-                        </option>
-                    @endforeach
-                </select>
+                @if ($selectedMember)
+                    <input type="hidden" name="member_id" value="{{ $selectedMember->member_id }}">
+                    <div class="selected-record">{{ $selectedMember->first_name }} {{ $selectedMember->last_name }} <span>{{ $selectedMember->user->email }}</span></div>
+                    <p class="muted">This member was selected from the member profile.</p>
+                @else
+                    <select id="member_id" name="member_id" required>
+                        <option value="">Select a member</option>
+                        @foreach ($members as $member)
+                            <option value="{{ $member->member_id }}" @selected((string) old('member_id') === (string) $member->member_id)>
+                                {{ $member->first_name }} {{ $member->last_name }} &#8212; {{ $member->user->email }}
+                            </option>
+                        @endforeach
+                    </select>
+                @endif
             </div>
             <div class="field">
                 <label for="plan_id">Active Plan</label>
@@ -31,23 +37,31 @@
                     <option value="">Select a plan</option>
                     @foreach ($plans as $plan)
                         <option value="{{ $plan->plan_id }}" @selected((string) old('plan_id') === (string) $plan->plan_id)>
-                            {{ $plan->plan_name }} — {{ $plan->duration_days }} days — {{ number_format((float) $plan->price, 2) }}
+                            {{ $plan->plan_name }} &#8212; {{ $plan->duration_days }} days &#8212; {{ number_format((float) $plan->price, 2) }}
                         </option>
                     @endforeach
                 </select>
             </div>
-            <div class="field">
-                <label for="membership_id">Renewal of (optional)</label>
-                <select id="membership_id" name="membership_id">
-                    <option value="">New purchase</option>
-                    @foreach ($renewableMemberships as $membership)
-                        <option value="{{ $membership->membership_id }}" @selected((string) old('membership_id') === (string) $membership->membership_id)>
-                            {{ $membership->member->first_name }} {{ $membership->member->last_name }} — {{ $membership->plan_name_snapshot }} (ends {{ $membership->end_date->format('M j, Y') }})
-                        </option>
-                    @endforeach
-                </select>
-                <p class="muted">The selected previous membership must belong to the chosen member and must not be suspended or already renewed.</p>
-            </div>
+            @if ($selectedMember && $selectedMembership)
+                <input type="hidden" name="membership_id" value="{{ $selectedMembership->membership_id }}">
+                <div class="field">
+                    <label>Membership being reactivated</label>
+                    <div class="selected-record">{{ $selectedMembership->plan_name_snapshot }} <span>Ended {{ $selectedMembership->end_date->format('M j, Y') }}</span></div>
+                </div>
+            @elseif (! $selectedMember)
+                <div class="field">
+                    <label for="membership_id">Membership to reactivate (optional)</label>
+                    <select id="membership_id" name="membership_id">
+                        <option value="">New purchase</option>
+                        @foreach ($renewableMemberships as $membership)
+                            <option value="{{ $membership->membership_id }}" @selected((string) old('membership_id') === (string) $membership->membership_id)>
+                                {{ $membership->member->first_name }} {{ $membership->member->last_name }} &#8212; {{ $membership->plan_name_snapshot }} (ends {{ $membership->end_date->format('M j, Y') }})
+                            </option>
+                        @endforeach
+                    </select>
+                    <p class="muted">Choose a previous membership when this is a reactivation or renewal.</p>
+                </div>
+            @endif
             <div class="field">
                 <label for="payment_method">Payment Method</label>
                 <select id="payment_method" name="payment_method" required>
@@ -79,3 +93,5 @@
     @endif
 </section>
 @endsection
+
+

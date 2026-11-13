@@ -1,4 +1,4 @@
-@extends('layouts.account')
+﻿@extends('layouts.account')
 
 @section('title', 'Log in')
 
@@ -38,3 +38,4 @@
         </section>
     </div>
 @endsection
+

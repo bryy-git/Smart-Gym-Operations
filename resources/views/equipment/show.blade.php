@@ -1,4 +1,4 @@
-@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
+﻿@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
 
 @section('title', $equipment->equipment_name)
 
@@ -12,7 +12,7 @@
 <section class="card">
     <dl>
         <dt>Status</dt><dd>{{ $equipment->equipment_status }}</dd>
-        <dt>Description</dt><dd>{{ $equipment->description ?? '—' }}</dd>
+        <dt>Description</dt><dd>{{ $equipment->description ?? '&#8212;' }}</dd>
         <dt>Usage since last resolved maintenance</dt><dd>{{ $usageSinceMaintenance }}</dd>
         <dt>Usage threshold</dt><dd>{{ $equipment->usage_threshold ?? 'Not set' }}</dd>
     </dl>
@@ -40,7 +40,7 @@
     @else
         <ul>
             @foreach ($equipment->maintenanceRecords as $record)
-                <li>#{{ $record->maintenance_id }} — {{ $record->maintenance_status }} — {{ $record->issue_description }}</li>
+                <li>#{{ $record->maintenance_id }} &#8212; {{ $record->maintenance_status }} &#8212; {{ $record->issue_description }}</li>
             @endforeach
         </ul>
     @endif
@@ -56,9 +56,11 @@
     @else
         <ul>
             @foreach ($equipment->usageRecords as $usage)
-                <li>{{ $usage->usage_date->format('M j, Y') }} — {{ $usage->usage_count }} — {{ $usage->recorder->first_name }} {{ $usage->recorder->last_name }}</li>
+                <li>{{ $usage->usage_date->format('M j, Y') }} &#8212; {{ $usage->usage_count }} &#8212; {{ $usage->recorder->first_name }} {{ $usage->recorder->last_name }}</li>
             @endforeach
         </ul>
     @endif
 </section>
 @endsection
+
+

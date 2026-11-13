@@ -1,4 +1,4 @@
-@extends('layouts.account')
+﻿@extends('layouts.account')
 
 @section('title', 'My Attendance')
 
@@ -34,7 +34,7 @@
                 @foreach ($attendances as $attendance)
                     <tr>
                         <td>{{ $attendance->check_in_at->format('M j, Y g:i A') }}</td>
-                        <td>{{ $attendance->check_out_at?->format('M j, Y g:i A') ?? '—' }}</td>
+                        <td>{{ $attendance->check_out_at?->format('M j, Y g:i A') ?? '&#8212;' }}</td>
                         <td>{{ $attendance->attendance_source }}</td>
                         <td>{{ $attendance->check_out_at === null ? 'Open' : 'Closed' }}</td>
                     </tr>
@@ -46,3 +46,5 @@
     @endif
 </section>
 @endsection
+
+

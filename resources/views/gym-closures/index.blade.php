@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Gym Closures')
 
@@ -25,7 +25,7 @@
                                 <br>{{ $closure->reason }}
                             @endif
                         </td>
-                        <td>{{ $closure->start_datetime->format('M j, Y g:i A') }} – {{ $closure->end_datetime->format('M j, Y g:i A') }}</td>
+                        <td>{{ $closure->start_datetime->format('M j, Y g:i A') }} &#8211; {{ $closure->end_datetime->format('M j, Y g:i A') }}</td>
                         <td><span class="status">{{ $closure->display_status }}</span></td>
                         <td>{{ $closure->creator?->first_name }} {{ $closure->creator?->last_name }}</td>
                         <td><a href="{{ route('admin.gym-closures.edit', $closure) }}">Edit</a></td>
@@ -38,3 +38,4 @@
     @endif
 </section>
 @endsection
+

@@ -7,7 +7,9 @@
         <div class="sidebar-group-links">
             <a href="{{ route(strtolower($audience).'.members.index') }}" @if (request()->routeIs(strtolower($audience).'.members.*')) aria-current="page" @endif>Members</a>
             <a href="{{ route(strtolower($audience).'.membership-plans.index') }}" @if (request()->routeIs(strtolower($audience).'.membership-plans.*')) aria-current="page" @endif>Membership plans</a>
+            @if ($audience !== 'Admin')
             <a href="{{ route(strtolower($audience).'.memberships.index') }}" @if (request()->routeIs(strtolower($audience).'.memberships.*')) aria-current="page" @endif>Memberships</a>
+            @endif
             <a href="{{ route(strtolower($audience).'.membership-requests.index') }}" @if (request()->routeIs(strtolower($audience).'.membership-requests.*')) aria-current="page" @endif>Requests</a>
         </div>
     </details>
@@ -33,3 +35,4 @@
         </div>
     </details>
 </nav>
+

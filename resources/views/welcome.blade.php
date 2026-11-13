@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="landing-document">
 <head>
     <meta charset="utf-8">
@@ -38,7 +38,7 @@
         <div class="landing-container hero-copy">
             <span class="eyebrow">Your fitness journey, better organized</span>
             <h1 id="hero-title">Everything Your Gym Needs.<span>All in One Place.</span></h1>
-            <p>One calm place for memberships, check-ins, payments, and equipment — built for members, staff, and owners.</p>
+            <p>One calm place for memberships, check-ins, payments, and equipment &#8212; built for members, staff, and owners.</p>
             <div class="hero-actions">
                 <a class="button" href="#plans">View memberships</a>
                 <a class="button secondary" href="#features">Learn more</a>
@@ -58,7 +58,7 @@
                 <h2>More than a place to work out.</h2>
                 <p>SmartGym Operations connects members with the information they need and gives gym teams practical tools for day-to-day operations. Memberships, visits, payments, and updates are easier to follow when they are organized in one system.</p>
                 <p>Whether you are checking your membership or keeping the gym running smoothly, SmartGym makes the essentials easier to manage.</p>
-                <a class="text-link" href="#features">Get to know SmartGym <span aria-hidden="true">→</span></a>
+                <a class="text-link" href="#features">Get to know SmartGym <span aria-hidden="true">&rarr;</span></a>
             </div>
         </div>
     </section>
@@ -68,7 +68,7 @@
             <div class="section-heading">
                 <span class="eyebrow">Everything in one place</span>
                 <h2>Less paperwork. More training.</h2>
-                <p>Practical tools for members, staff, and owners — without getting in the way.</p>
+                <p>Practical tools for members, staff, and owners &#8212; without getting in the way.</p>
             </div>
             <div class="feature-grid">
                 <article class="feature-card">
@@ -129,7 +129,7 @@
                                 <p>{{ $plan->description }}</p>
                             @endif
                             <p class="plan-price">{{ number_format((float) $plan->price, 2) }}</p>
-                            <a class="button secondary" href="{{ route('login') }}">Sign in to request this plan <span aria-hidden="true">→</span></a>
+                            <a class="button secondary" href="{{ route('login') }}">Sign in to request this plan <span aria-hidden="true">&rarr;</span></a>
                         </article>
                     @endforeach
                 </div>
@@ -144,7 +144,7 @@
                 <h2>Ready to start your fitness journey?</h2>
                 <p>Sign in to your SmartGym account to explore membership plans and manage your requests.</p>
             </div>
-            <a class="button" href="{{ route('login') }}">Log in to continue <span aria-hidden="true">↗</span></a>
+            <a class="button" href="{{ route('login') }}">Log in to continue <span aria-hidden="true">&#8599;</span></a>
         </div>
     </section>
 
@@ -152,10 +152,10 @@
         <div class="landing-container contact-row">
             <div>
                 <span class="eyebrow">Contact</span>
-                <h2>We’re here to help.</h2>
+                <h2>We&#8217;re here to help.</h2>
                 <p>For assistance, sign in to your account or contact your gym team directly.</p>
             </div>
-            <a class="text-link" href="{{ route('login') }}">Go to login <span aria-hidden="true">→</span></a>
+            <a class="text-link" href="{{ route('login') }}">Go to login <span aria-hidden="true">&rarr;</span></a>
         </div>
     </section>
 </main>
@@ -169,8 +169,10 @@
             <a href="#plans">Plans</a>
             <a href="{{ route('login') }}">Log in</a>
         </nav>
-        <small>© {{ now()->year }} SmartGym Operations</small>
+        <small>&copy; {{ now()->year }} SmartGym Operations</small>
     </div>
 </footer>
 </body>
 </html>
+
+

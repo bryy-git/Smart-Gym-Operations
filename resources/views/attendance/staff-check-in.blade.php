@@ -1,4 +1,4 @@
-@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
+﻿@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
 
 @section('title', 'Staff-assisted Check-in')
 
@@ -17,7 +17,7 @@
                     <option value="">Select a member</option>
                     @foreach ($members as $member)
                         <option value="{{ $member->member_id }}" @selected((string) old('member_id') === (string) $member->member_id)>
-                            {{ $member->first_name }} {{ $member->last_name }} — {{ $member->user->email }}
+                            {{ $member->first_name }} {{ $member->last_name }} &#8212; {{ $member->user->email }}
                         </option>
                     @endforeach
                 </select>
@@ -30,3 +30,5 @@
     @endif
 </section>
 @endsection
+
+

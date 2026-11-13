@@ -1,4 +1,4 @@
-@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.account')
+﻿@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.account')
 
 @section('title', 'Operating Hours & Closures')
 
@@ -19,7 +19,7 @@
                             Closed
                         @else
                             @foreach ($daySchedules as $schedule)
-                                {{ substr($schedule->opening_time, 0, 5) }}–{{ substr($schedule->closing_time, 0, 5) }}@if (! $loop->last), @endif
+                                {{ substr($schedule->opening_time, 0, 5) }}&#8211;{{ substr($schedule->closing_time, 0, 5) }}@if (! $loop->last), @endif
                             @endforeach
                         @endif
                     </td>
@@ -38,7 +38,7 @@
         @foreach ($closures as $closure)
             <article>
                 <h3>{{ $closure->title }} <span class="status">{{ $closure->display_status }}</span></h3>
-                <p><strong>{{ $closure->start_datetime->format('M j, Y g:i A') }} – {{ $closure->end_datetime->format('M j, Y g:i A') }}</strong></p>
+                <p><strong>{{ $closure->start_datetime->format('M j, Y g:i A') }} &#8211; {{ $closure->end_datetime->format('M j, Y g:i A') }}</strong></p>
                 @if ($closure->reason)
                     <p>{{ $closure->reason }}</p>
                 @endif
@@ -47,3 +47,4 @@
     @endif
 </section>
 @endsection
+

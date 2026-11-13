@@ -1,4 +1,4 @@
-@extends('layouts.account')
+﻿@extends('layouts.account')
 
 @section('title', 'Payment Details')
 
@@ -11,7 +11,7 @@
         <dt>Amount</dt><dd>{{ number_format((float) $payment->amount, 2) }}</dd>
         <dt>Approved Refunds</dt><dd>{{ number_format((float) $approvedRefundTotal, 2) }}</dd>
         <dt>Payment Method</dt><dd>{{ $payment->payment_method }}</dd>
-        <dt>Reference Number</dt><dd>{{ $payment->reference_number ?? '—' }}</dd>
+        <dt>Reference Number</dt><dd>{{ $payment->reference_number ?? '&#8212;' }}</dd>
         <dt>Payment Date</dt><dd>{{ $payment->payment_date->format('M j, Y g:i A') }}</dd>
     </dl>
     <div class="button-row">
@@ -20,3 +20,5 @@
     </div>
 </section>
 @endsection
+
+

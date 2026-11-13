@@ -1,4 +1,4 @@
-@extends('layouts.account')
+﻿@extends('layouts.account')
 
 @section('title', 'Membership Plans')
 
@@ -22,7 +22,7 @@
                 @if ($plan->description)
                     <p>{{ $plan->description }}</p>
                 @endif
-                <p>{{ $plan->duration_days }} days · {{ number_format((float) $plan->price, 2) }}</p>
+                <p>{{ $plan->duration_days }} days &middot; {{ number_format((float) $plan->price, 2) }}</p>
                 @unless ($hasCurrentOrUpcomingMembership)
                     <form method="POST" action="{{ route('member.plans.purchase', $plan) }}">
                         @csrf
@@ -40,3 +40,5 @@
 @endif
 <p><a href="{{ route('member.memberships.index') }}">View membership and request history</a></p>
 @endsection
+
+

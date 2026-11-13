@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+﻿@extends('layouts.staff')
 
 @section('title', 'Staff Dashboard')
 
@@ -46,9 +46,9 @@
                 @foreach ($relevantClosures as $closure)
                     <li>
                         <strong>{{ $closure->title }}</strong>
-                        — {{ $closure->start_datetime->format('M j, Y g:i A') }} to {{ $closure->end_datetime->format('M j, Y g:i A') }}
+                        &#8212; {{ $closure->start_datetime->format('M j, Y g:i A') }} to {{ $closure->end_datetime->format('M j, Y g:i A') }}
                         @if ($closure->reason)
-                            — {{ $closure->reason }}
+                            &#8212; {{ $closure->reason }}
                         @endif
                     </li>
                 @endforeach
@@ -66,7 +66,7 @@
                 @foreach ($recentAttendance as $attendanceRecord)
                     <li>
                         {{ $attendanceRecord->member?->first_name }} {{ $attendanceRecord->member?->last_name }}
-                        — {{ $attendanceRecord->check_in_at->format('g:i A') }}
+                        &#8212; {{ $attendanceRecord->check_in_at->format('g:i A') }}
                         @if ($attendanceRecord->check_out_at === null)
                             (currently in gym)
                         @endif
@@ -108,7 +108,7 @@
             <ul>
                 @foreach ($equipmentAlerts as $equipment)
                     <li>
-                        <strong>{{ $equipment->equipment_name }}</strong> — {{ $equipment->equipment_status }}
+                        <strong>{{ $equipment->equipment_name }}</strong> &#8212; {{ $equipment->equipment_status }}
                         @if ($equipment->usage_threshold !== null && $equipment->usage_since_maintenance >= $equipment->usage_threshold)
                             (usage {{ $equipment->usage_since_maintenance }} / threshold {{ $equipment->usage_threshold }})
                         @endif
@@ -125,9 +125,11 @@
         @else
             <ul>
                 @foreach ($recentMembers as $member)
-                    <li>{{ $member->first_name }} {{ $member->last_name }} — {{ $member->member_status }}</li>
+                    <li>{{ $member->first_name }} {{ $member->last_name }} &#8212; {{ $member->member_status }}</li>
                 @endforeach
             </ul>
         @endif
     </section>
 @endsection
+
+

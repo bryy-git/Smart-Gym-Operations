@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -25,7 +25,7 @@
 </head>
 <body>
 <main class="receipt">
-<p class="muted">SmartGym Operations · {{ $audience }} copy</p>
+<p class="muted">SmartGym Operations &middot; {{ $audience }} copy</p>
 <h1>Payment Receipt</h1>
 <p>Receipt #{{ $payment->payment_id }}</p>
 <dl class="receipt-details">
@@ -34,7 +34,7 @@
     <dt>Membership Plan</dt><dd>{{ $payment->membership->plan_name_snapshot }}</dd>
     <dt>Payment Amount</dt><dd>{{ number_format((float) $payment->amount, 2) }}</dd>
     <dt>Payment Method</dt><dd>{{ $payment->payment_method }}</dd>
-    <dt>Reference Number</dt><dd>{{ $payment->reference_number ?? '—' }}</dd>
+    <dt>Reference Number</dt><dd>{{ $payment->reference_number ?? '&#8212;' }}</dd>
     <dt>Payment Date</dt><dd>{{ $payment->payment_date->format('M j, Y g:i A') }}</dd>
     <dt>Received By</dt><dd>{{ $payment->receiver?->first_name }} {{ $payment->receiver?->last_name }}</dd>
 </dl>
@@ -51,3 +51,5 @@
 </main>
 </body>
 </html>
+
+

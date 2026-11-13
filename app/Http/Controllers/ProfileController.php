@@ -13,6 +13,16 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
+    public function show(Request $request): View
+    {
+        $user = $request->user();
+
+        return view('profile.show', [
+            'user' => $user,
+            'member' => $user->role === 'Member' ? $user->member : null,
+        ]);
+    }
+
     public function edit(Request $request): View
     {
         $user = $request->user();
@@ -30,6 +40,7 @@ class ProfileController extends Controller
         $member = $user->role === 'Member' ? $user->member : null;
 
         $rules = [
+            'current_password' => ['required', 'current_password'],
             'first_name' => ['required', 'string', 'max:100'],
             'last_name' => ['required', 'string', 'max:100'],
             'email' => [

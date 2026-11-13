@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Operating Schedule')
 
@@ -59,3 +59,4 @@
     </section>
 @endforeach
 @endsection
+

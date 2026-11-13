@@ -230,7 +230,85 @@ const initializeFormFeedback = () => {
     });
 };
 
+
+const initializeDashboardFilters = () => {
+    if (document.documentElement.dataset.dashboardFiltersReady === 'true') return;
+    document.documentElement.dataset.dashboardFiltersReady = 'true';
+
+    document.addEventListener('change', async (event) => {
+        const select = event.target.closest('[data-dashboard-filter] select');
+        const section = document.querySelector('#admin-analytics');
+        if (!select || !section) return;
+
+        const form = select.form;
+        const url = new URL(window.location.href);
+        new FormData(form).forEach((value, key) => url.searchParams.set(key, value));
+        section.setAttribute('aria-busy', 'true');
+        section.classList.add('is-refreshing');
+
+        try {
+            const response = await fetch(url, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest', Accept: 'text/html' },
+            });
+            if (!response.ok) throw new Error('Unable to refresh analytics.');
+            const html = await response.text();
+            const updatedSection = new DOMParser().parseFromString(html, 'text/html').querySelector('#admin-analytics');
+            if (!updatedSection) throw new Error('Updated analytics section was not found.');
+            section.replaceWith(updatedSection);
+            window.history.pushState({}, '', url);
+        } catch (error) {
+            form.submit();
+        }
+    });
+};
+
+
+const initializeConfirmationDialogs = () => {
+    if (document.documentElement.dataset.confirmationsReady === 'true') return;
+    document.documentElement.dataset.confirmationsReady = 'true';
+
+    const closeModal = (modal) => {
+        modal.remove();
+        document.body.classList.remove('has-confirmation-modal');
+    };
+
+    document.addEventListener('submit', (event) => {
+        const form = event.target.closest('form[data-confirm="true"]');
+        if (!form || form.dataset.confirmed === 'true') return;
+
+        event.preventDefault();
+        const modal = document.createElement('div');
+        modal.className = 'confirmation-modal';
+        modal.setAttribute('role', 'dialog');
+        modal.setAttribute('aria-modal', 'true');
+        modal.setAttribute('aria-labelledby', 'confirmation-title');
+        modal.innerHTML = `
+            <div class="confirmation-modal__backdrop" data-confirm-cancel></div>
+            <div class="confirmation-modal__card">
+                <div class="confirmation-modal__icon" aria-hidden="true">!</div>
+                <h2 id="confirmation-title">${form.dataset.confirmTitle || 'Are you sure?'}</h2>
+                <p>${form.dataset.confirmMessage || 'Please confirm this action before continuing.'}</p>
+                <div class="confirmation-modal__actions">
+                    <button type="button" class="button secondary" data-confirm-cancel>Cancel</button>
+                    <button type="button" class="button confirmation-modal__confirm">${form.dataset.confirmLabel || 'Confirm'}</button>
+                </div>
+            </div>`;
+        document.body.append(modal);
+        document.body.classList.add('has-confirmation-modal');
+        const cancel = () => closeModal(modal);
+        modal.querySelectorAll('[data-confirm-cancel]').forEach((button) => button.addEventListener('click', cancel));
+        modal.querySelector('.confirmation-modal__confirm').addEventListener('click', () => {
+            form.dataset.confirmed = 'true';
+            closeModal(modal);
+            form.submit();
+        });
+        modal.querySelector('.confirmation-modal__confirm').focus();
+    });
+};
+
 const initializeApplication = () => {
+    initializeConfirmationDialogs();
+    initializeDashboardFilters();
     initializePasswordToggles();
     initializeSiteNavigation();
     initializeSidebarAccordions();

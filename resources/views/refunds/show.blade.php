@@ -1,4 +1,4 @@
-@extends($audience === 'Staff' ? 'layouts.staff' : 'layouts.admin')
+﻿@extends($audience === 'Staff' ? 'layouts.staff' : 'layouts.admin')
 
 @section('title', 'Refund Details')
 
@@ -12,16 +12,18 @@
         <dt>Original payment amount</dt><dd>{{ number_format((float) $refund->payment->amount, 2) }}</dd>
         <dt>Remaining refundable balance</dt><dd>{{ number_format((float) $remainingBalance, 2) }}</dd>
         <dt>Requested amount</dt><dd>{{ number_format((float) $refund->requested_amount, 2) }}</dd>
-        <dt>Approved amount</dt><dd>{{ $refund->approved_amount === null ? '—' : number_format((float) $refund->approved_amount, 2) }}</dd>
+        <dt>Approved amount</dt><dd>{{ $refund->approved_amount === null ? '&#8212;' : number_format((float) $refund->approved_amount, 2) }}</dd>
         <dt>Reason</dt><dd>{{ $refund->reason }}</dd>
         <dt>Status</dt><dd>{{ $refund->refund_status }}</dd>
         <dt>Requested by</dt><dd>{{ $refund->requester->first_name }} {{ $refund->requester->last_name }}</dd>
         <dt>Reviewed by</dt><dd>{{ $refund->reviewer?->first_name }} {{ $refund->reviewer?->last_name }}</dd>
-        <dt>Reviewed at</dt><dd>{{ $refund->reviewed_at?->format('M j, Y g:i A') ?? '—' }}</dd>
-        <dt>Decision reason</dt><dd>{{ $refund->decision_reason ?? '—' }}</dd>
+        <dt>Reviewed at</dt><dd>{{ $refund->reviewed_at?->format('M j, Y g:i A') ?? '&#8212;' }}</dd>
+        <dt>Decision reason</dt><dd>{{ $refund->decision_reason ?? '&#8212;' }}</dd>
     </dl>
     @if ($audience === 'Admin' && $refund->refund_status === 'Pending')
         <a class="button" href="{{ route('admin.refunds.review', $refund) }}">Review Request</a>
     @endif
 </section>
 @endsection
+
+

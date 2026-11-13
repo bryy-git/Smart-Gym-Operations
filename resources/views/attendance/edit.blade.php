@@ -1,4 +1,4 @@
-@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
+﻿@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
 
 @section('title', 'Correct Attendance')
 
@@ -6,7 +6,7 @@
 <p class="breadcrumb"><a href="{{ route($routePrefix.'attendance.index') }}">Attendance</a> / Correct attendance</p>
 <h1>Correct attendance #{{ $attendance->attendance_id }}</h1>
 <section class="card">
-    <p>{{ $attendance->member->first_name }} {{ $attendance->member->last_name }} — {{ $attendance->member->user->email }}</p>
+    <p>{{ $attendance->member->first_name }} {{ $attendance->member->last_name }} &#8212; {{ $attendance->member->user->email }}</p>
     <form method="POST" action="{{ route($routePrefix.'attendance.update', $attendance) }}">
         @csrf
         @method('PUT')
@@ -37,11 +37,13 @@
         @foreach ($attendance->corrections as $correction)
             <article>
                 <h3>{{ $correction->corrected_at->format('M j, Y g:i A') }} by {{ $correction->corrector->first_name }} {{ $correction->corrector->last_name }}</h3>
-                <p>Check-in: {{ $correction->original_check_in_at->format('M j, Y g:i A') }} → {{ $correction->corrected_check_in_at->format('M j, Y g:i A') }}</p>
-                <p>Check-out: {{ $correction->original_check_out_at?->format('M j, Y g:i A') ?? 'Open' }} → {{ $correction->corrected_check_out_at?->format('M j, Y g:i A') ?? 'Open' }}</p>
+                <p>Check-in: {{ $correction->original_check_in_at->format('M j, Y g:i A') }} &rarr; {{ $correction->corrected_check_in_at->format('M j, Y g:i A') }}</p>
+                <p>Check-out: {{ $correction->original_check_out_at?->format('M j, Y g:i A') ?? 'Open' }} &rarr; {{ $correction->corrected_check_out_at?->format('M j, Y g:i A') ?? 'Open' }}</p>
                 <p>Reason: {{ $correction->correction_reason }}</p>
             </article>
         @endforeach
     @endif
 </section>
 @endsection
+
+

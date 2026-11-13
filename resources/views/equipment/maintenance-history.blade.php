@@ -1,4 +1,4 @@
-@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
+﻿@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
 
 @section('title', 'Maintenance History')
 
@@ -11,10 +11,10 @@
     @else
         @foreach ($records as $record)
             <article class="card">
-                <h2>#{{ $record->maintenance_id }} — {{ $record->maintenance_status }}</h2>
+                <h2>#{{ $record->maintenance_id }} &#8212; {{ $record->maintenance_status }}</h2>
                 <p><strong>Reported:</strong> {{ $record->reported_at->format('M j, Y g:i A') }} by {{ $record->reporter->first_name }} {{ $record->reporter->last_name }}</p>
                 <p><strong>Issue:</strong> {{ $record->issue_description }}</p>
-                <p><strong>Action details:</strong> {{ $record->action_details ?? '—' }}</p>
+                <p><strong>Action details:</strong> {{ $record->action_details ?? '&#8212;' }}</p>
                 <p><strong>Resolved:</strong> {{ $record->resolved_at?->format('M j, Y g:i A') ?? 'Not resolved' }}</p>
                 <form method="POST" action="{{ route($routePrefix.'equipment.maintenance.update', [$equipment, $record]) }}">
                     @csrf
@@ -39,3 +39,5 @@
     @endif
 </section>
 @endsection
+
+

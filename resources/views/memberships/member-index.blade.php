@@ -1,4 +1,4 @@
-@extends('layouts.account')
+﻿@extends('layouts.account')
 
 @section('title', 'My Memberships')
 
@@ -19,7 +19,7 @@
                     <option value="">Select an active plan</option>
                     @foreach ($plans as $plan)
                         <option value="{{ $plan->plan_id }}" @selected((string) old('plan_id') === (string) $plan->plan_id)>
-                            {{ $plan->plan_name }} — {{ $plan->duration_days }} days — {{ number_format((float) $plan->price, 2) }}
+                            {{ $plan->plan_name }} &#8212; {{ $plan->duration_days }} days &#8212; {{ number_format((float) $plan->price, 2) }}
                         </option>
                     @endforeach
                 </select>
@@ -46,8 +46,8 @@
                 <tbody>
                 @foreach ($memberships as $membership)
                     <tr>
-                        <td>{{ $membership->plan_name_snapshot }}<br>{{ number_format((float) $membership->plan_price_snapshot, 2) }} · {{ $membership->plan_duration_snapshot }} days</td>
-                        <td>{{ $membership->start_date->format('M j, Y') }} – {{ $membership->end_date->format('M j, Y') }}</td>
+                        <td>{{ $membership->plan_name_snapshot }}<br>{{ number_format((float) $membership->plan_price_snapshot, 2) }} &middot; {{ $membership->plan_duration_snapshot }} days</td>
+                        <td>{{ $membership->start_date->format('M j, Y') }} &#8211; {{ $membership->end_date->format('M j, Y') }}</td>
                         <td>{{ $membership->display_status }}</td>
                         <td>{{ number_format((float) ($membership->paid_total ?? 0), 2) }}</td>
                     </tr>
@@ -72,10 +72,10 @@
                     <tr>
                         <td>{{ $membershipRequest->request_type }}</td>
                         <td>{{ $membershipRequest->plan?->plan_name ?? 'Unavailable' }}</td>
-                        <td>{{ $membershipRequest->request_reason ?? '—' }}</td>
+                        <td>{{ $membershipRequest->request_reason ?? '&#8212;' }}</td>
                         <td>{{ $membershipRequest->requested_at->format('M j, Y g:i A') }}</td>
                         <td>{{ $membershipRequest->request_status }}</td>
-                        <td>{{ $membershipRequest->decision_reason ?? '—' }}</td>
+                        <td>{{ $membershipRequest->decision_reason ?? '&#8212;' }}</td>
                     </tr>
                 @endforeach
                 </tbody>
@@ -85,3 +85,5 @@
     @endif
 </section>
 @endsection
+
+

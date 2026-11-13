@@ -14,12 +14,29 @@
         <span class="hamburger-icon" aria-hidden="true"><span></span><span></span><span></span></span>
     </button>
     <div class="header-actions">
-        <span class="user-chip">{{ $audience }}@if (auth()->user()->first_name) · {{ auth()->user()->first_name }}@endif</span>
-        <a class="button secondary" href="{{ route('profile.edit') }}">Profile</a>
-        <form method="post" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit">Log out</button>
-        </form>
+
+        <details class="user-menu">
+            <summary class="user-menu-trigger">
+                <span class="user-menu-avatar" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" role="presentation">
+                        <circle cx="12" cy="8" r="3.25"></circle>
+                        <path d="M5.5 20c.55-3.25 2.72-5 6.5-5s5.95 1.75 6.5 5"></path>
+                    </svg>
+                </span>
+                <span class="user-menu-identity">
+                    <strong>{{ auth()->user()->first_name ?: $audience }}</strong>
+                    <span>{{ $audience }}</span>
+                </span>
+            </summary>
+            <div class="user-menu-panel">
+                <a href="{{ route('profile.edit') }}">View profile</a>
+                <a href="{{ route('profile.edit') }}">Edit profile</a>
+                <form method="post" action="{{ route('logout') }}" data-confirm="true" data-confirm-title="Log out?" data-confirm-message="You will be signed out of SmartGym Operations." data-confirm-label="Log out">
+                    @csrf
+                    <button class="logout-action" type="submit">Log out</button>
+                </form>
+            </div>
+        </details>
     </div>
 </header>
 <div class="mobile-sidebar" id="mobile-navigation" hidden>
@@ -53,3 +70,5 @@
 </div>
 </body>
 </html>
+
+

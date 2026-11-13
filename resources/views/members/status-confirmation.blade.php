@@ -1,4 +1,4 @@
-@extends($layout)
+﻿@extends($layout)
 
 @section('title', 'Confirm Status Change')
 
@@ -38,3 +38,4 @@
     </form>
 </section>
 @endsection
+

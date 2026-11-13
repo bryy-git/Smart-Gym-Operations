@@ -1,4 +1,4 @@
-@extends(request()->routeIs('staff.*') ? 'layouts.staff' : 'layouts.admin')
+﻿@extends(request()->routeIs('staff.*') ? 'layouts.staff' : 'layouts.admin')
 
 @section('title', 'Review Membership Request')
 
@@ -8,15 +8,15 @@
 
 <section class="card">
     <dl>
-        <dt>Member</dt><dd>{{ $membershipRequest->member->first_name }} {{ $membershipRequest->member->last_name }} — {{ $membershipRequest->member->user->email }}</dd>
+        <dt>Member</dt><dd>{{ $membershipRequest->member->first_name }} {{ $membershipRequest->member->last_name }} &#8212; {{ $membershipRequest->member->user->email }}</dd>
         <dt>Requested plan</dt><dd>{{ $membershipRequest->plan?->plan_name ?? 'Unavailable' }}</dd>
         <dt>Current plan price</dt><dd>{{ $membershipRequest->plan ? number_format((float) $membershipRequest->plan->price, 2) : 'Unavailable' }}</dd>
         <dt>Duration</dt><dd>{{ $membershipRequest->plan?->duration_days ?? 'Unavailable' }} days</dd>
         @if ($membershipRequest->membership)
-            <dt>Renewal of</dt><dd>{{ $membershipRequest->membership->plan_name_snapshot }} — ends {{ $membershipRequest->membership->end_date->format('M j, Y') }}</dd>
+            <dt>Renewal of</dt><dd>{{ $membershipRequest->membership->plan_name_snapshot }} &#8212; ends {{ $membershipRequest->membership->end_date->format('M j, Y') }}</dd>
         @endif
         <dt>Requested</dt><dd>{{ $membershipRequest->requested_at->format('M j, Y g:i A') }}</dd>
-        <dt>Member note</dt><dd>{{ $membershipRequest->request_reason ?? '—' }}</dd>
+        <dt>Member note</dt><dd>{{ $membershipRequest->request_reason ?? '&#8212;' }}</dd>
     </dl>
     @if (! $membershipRequest->plan || $membershipRequest->plan->plan_status !== 'Active')
         <p class="warning" role="alert">This plan is no longer active. The request cannot be approved, but it may be rejected with a reason.</p>
@@ -71,3 +71,5 @@
     </form>
 </section>
 @endsection
+
+

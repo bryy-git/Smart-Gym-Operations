@@ -1,4 +1,4 @@
-@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
+﻿@extends($routePrefix === 'staff.' ? 'layouts.staff' : 'layouts.admin')
 
 @section('title', 'Payment Details')
 
@@ -15,14 +15,14 @@
 </div>
 <section class="card">
     <dl>
-        <dt>Member</dt><dd>{{ $payment->membership->member->first_name }} {{ $payment->membership->member->last_name }} — {{ $payment->membership->member->user->email }}</dd>
+        <dt>Member</dt><dd>{{ $payment->membership->member->first_name }} {{ $payment->membership->member->last_name }} &#8212; {{ $payment->membership->member->user->email }}</dd>
         <dt>Membership</dt><dd><a href="{{ route($routePrefix.'memberships.show', $payment->membership) }}">{{ $payment->membership->plan_name_snapshot }}</a></dd>
         <dt>Amount</dt><dd>{{ number_format((float) $payment->amount, 2) }}</dd>
         <dt>Payment Method</dt><dd>{{ $payment->payment_method }}</dd>
-        <dt>Reference Number</dt><dd>{{ $payment->reference_number ?? '—' }}</dd>
+        <dt>Reference Number</dt><dd>{{ $payment->reference_number ?? '&#8212;' }}</dd>
         <dt>Payment Date</dt><dd>{{ $payment->payment_date->format('M j, Y g:i A') }}</dd>
         <dt>Received By</dt><dd>{{ $payment->receiver?->first_name }} {{ $payment->receiver?->last_name }}</dd>
-        <dt>Notes</dt><dd>{{ $payment->notes ?? '—' }}</dd>
+        <dt>Notes</dt><dd>{{ $payment->notes ?? '&#8212;' }}</dd>
         <dt>Approved Refunds</dt><dd>{{ number_format((float) $approvedRefundTotal, 2) }}</dd>
         <dt>Remaining Refund Balance</dt><dd>{{ number_format((float) $remainingBalance, 2) }}</dd>
     </dl>
@@ -39,11 +39,11 @@
                 <tbody>
                 @foreach ($payment->refunds as $refund)
                     <tr>
-                        <td>{{ $refund->created_at?->format('M j, Y') ?? '—' }}</td>
+                        <td>{{ $refund->created_at?->format('M j, Y') ?? '&#8212;' }}</td>
                         <td>{{ $refund->reason }}</td>
                         <td>{{ $refund->refund_status }}</td>
                         <td>{{ number_format((float) $refund->requested_amount, 2) }}</td>
-                        <td>{{ $refund->approved_amount === null ? '—' : number_format((float) $refund->approved_amount, 2) }}</td>
+                        <td>{{ $refund->approved_amount === null ? '&#8212;' : number_format((float) $refund->approved_amount, 2) }}</td>
                         <td>{{ $refund->requester?->first_name }} {{ $refund->requester?->last_name }}</td>
                     </tr>
                 @endforeach
@@ -53,3 +53,5 @@
     @endif
 </section>
 @endsection
+
+
